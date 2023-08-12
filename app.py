@@ -1,8 +1,12 @@
 import re
-from sudachipy import dictionary
+from sudachipy import dictionary, tokenizer
+from sudachipy.tokenizer import Tokenizer
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-# from mlask import MLAsk
+
+import numpy as np
+import json
+import requests
 
 def extract_text_from_pdf(pdf_path):
     """PDFファイルからテキストを抽出する。
@@ -61,45 +65,48 @@ def extract_nouns(text):
     return nouns
 
 
+with open('secret.json') as f:
+    secret = json.load(f)
 
-import torch
-from transformers import DistilBertTokenizer, DistilBertForSequenceClassification
+BASE_URL = secret["COTOHA_BASE_URL"]
+CLIENT_ID = secret["COTOHA_ID"]
+CLIENT_SECRET = secret["COTOHA_SECRET"]
 
-def preprocess_text_japanese(text):
-    # 1. テキストの正規化
-    text = text.lower()
-    text = re.sub(r'[^\w\s]', '', text)
+def get_cotoha_acces_token():
 
-    # 2. トークン化
-    sudachi_tokenizer = dictionary.Dictionary().create()
-    tokens = [m.surface() for m in sudachi_tokenizer.tokenize(text, mode=Tokenizer.SplitMode.C)]
+    token_url = "https://api.ce-cotoha.com/v1/oauth/accesstokens"
 
-    # 3. ストップワードの削除
-    stopwords = set()  # ここに日本語のストップワードを追加
-    tokens = [token for token in tokens if token not in stopwords]
+    headers = {
+        "Content-Type": "application/json",
+        "charset": "UTF-8"
+    }
 
-    # 4. ステミング/ルンマタイゼーション
-    tokens = [m.dictionary_form() for m in sudachi_tokenizer.tokenize(text, mode=Tokenizer.SplitMode.C)]
+    data = {
+        "grantType": "client_credentials",
+        "clientId": CLIENT_ID,
+        "clientSecret": CLIENT_SECRET
+    }
 
-    return ' '.join(tokens)
+    response = requests.post(token_url,
+                        headers=headers,
+                        data=json.dumps(data))
 
-def analyze_sentiment_japanese(text):
-    model_name = "bandainamco-mirai/distilbert-base-japanese"
-    tokenizer = DistilBertTokenizer.from_pretrained(model_name)
-    model = DistilBertForSequenceClassification.from_pretrained(model_name)
-    
-    if torch.cuda.is_available():
-        model.cuda()
+    access_token = response.json()["access_token"]
 
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
-    if torch.cuda.is_available():
-        inputs = {key: tensor.cuda() for key, tensor in inputs.items()}
+    return access_token
 
-    with torch.no_grad():
-        outputs = model(**inputs)
-    
-    logits = outputs.logits
-    _, preds = torch.max(logits, dim=1)
-    label = "positive" if preds.item() == 1 else "negative"
-    
-    return label
+
+def cotoha_sentiment_analyze(access_token, sentence):
+    base_url = BASE_URL
+    headers = {
+        "Content-Type": "application/json",
+        "charset": "UTF-8",
+        "Authorization": "Bearer {}".format(access_token)
+    }
+    data = {
+        "sentence": sentence,
+    }
+    response = requests.post(base_url + "nlp/v1/sentiment",
+                      headers=headers,
+                      data=json.dumps(data))
+    return response.json()

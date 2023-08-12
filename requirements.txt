@@ -1,7 +1,10 @@
+re
 sudachipy
-SudachiDict-core
 wordcloud
 matplotlib
+numpy
+json
+requests
 PyPDF2
-transformers
-torch
+streamlit
+pandas
