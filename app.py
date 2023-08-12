@@ -39,7 +39,7 @@ def create_wordcloud(text, stopwords=None, background_color='white', max_words=2
     """
     sudachi_tokenizer = dictionary.Dictionary().create()
     text = " ".join([m.surface() for m in sudachi_tokenizer.tokenize(text)])
-    wc = WordCloud(font_path='./Fonts/Arial Unicode.ttf', stopwords=stopwords, background_color=background_color, max_words=max_words, width=width, height=height)
+    wc = WordCloud(font_path='./Arial Unicode.ttf', stopwords=stopwords, background_color=background_color, max_words=max_words, width=width, height=height)
     wc.generate(text)
     fig, ax = plt.subplots()
     ax.imshow(wc, interpolation='bilinear')
