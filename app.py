@@ -3,7 +3,7 @@ import re
 from sudachipy import dictionary
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from mlask import MLAsk
+# from mlask import MLAsk
 
 def extract_text_from_pdf(pdf_path):
     """PDFファイルからテキストを抽出する。
@@ -62,14 +62,57 @@ def extract_nouns(text):
     return nouns
 
 
-def emotion_analysis(text):
-    """テキストをML-Askを使用して解析し、ラッセル円環モデルに基づいた感情分析を行う。
+# def emotion_analysis(text):
+#     """テキストをML-Askを使用して解析し、ラッセル円環モデルに基づいた感情分析を行う。
 
-    Args:
-    - text (str): 入力テキスト。
+#     Args:
+#     - text (str): 入力テキスト。
     
-    Returns:
-    - dict: 分析結果の辞書。
-    """
-    emotion_analyzer = MLAsk()
-    return emotion_analyzer.analyze(text)
+#     Returns:
+#     - dict: 分析結果の辞書。
+#     """
+#     emotion_analyzer = MLAsk()
+#     return emotion_analyzer.analyze(text)
+
+
+import torch
+from transformers import DistilBertTokenizer, DistilBertForSequenceClassification
+
+def preprocess_text_japanese(text):
+    # 1. テキストの正規化
+    text = text.lower()
+    text = re.sub(r'[^\w\s]', '', text)
+
+    # 2. トークン化
+    sudachi_tokenizer = dictionary.Dictionary().create()
+    tokens = [m.surface() for m in sudachi_tokenizer.tokenize(text, mode=Tokenizer.SplitMode.C)]
+
+    # 3. ストップワードの削除
+    stopwords = set()  # ここに日本語のストップワードを追加
+    tokens = [token for token in tokens if token not in stopwords]
+
+    # 4. ステミング/ルンマタイゼーション
+    tokens = [m.dictionary_form() for m in sudachi_tokenizer.tokenize(text, mode=Tokenizer.SplitMode.C)]
+
+    return ' '.join(tokens)
+
+def analyze_sentiment_japanese(text):
+    model_name = "bandainamco-mirai/distilbert-base-japanese"
+    tokenizer = DistilBertTokenizer.from_pretrained(model_name)
+    model = DistilBertForSequenceClassification.from_pretrained(model_name)
+    
+    if torch.cuda.is_available():
+        model.cuda()
+
+    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
+    if torch.cuda.is_available():
+        inputs = {key: tensor.cuda() for key, tensor in inputs.items()}
+
+    with torch.no_grad():
+        outputs = model(**inputs)
+    
+    logits = outputs.logits
+    _, preds = torch.max(logits, dim=1)
+    label = "positive" if preds.item() == 1 else "negative"
+    
+    return label

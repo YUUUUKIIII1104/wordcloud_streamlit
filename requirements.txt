@@ -2,5 +2,6 @@ sudachipy
 SudachiDict-core
 wordcloud
 matplotlib
-pymlask
 PyPDF2
+transformers
+torch
