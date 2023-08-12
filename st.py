@@ -1,6 +1,6 @@
 
 import streamlit as st
-from app import extract_text_from_pdf, create_wordcloud, extract_nouns, emotion_analysis
+from app import extract_text_from_pdf, create_wordcloud, extract_nouns
 
 st.title("PDFテキストマイニングアプリ")
 
