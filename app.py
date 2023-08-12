@@ -1,9 +1,8 @@
-
 import re
 from sudachipy import dictionary
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-# from mlask import MLAsk
+
 
 def extract_text_from_pdf(pdf_path):
     """PDFファイルからテキストを抽出する。
@@ -60,19 +59,6 @@ def extract_nouns(text):
     sudachi_tokenizer = dictionary.Dictionary().create()
     nouns = [m.surface() for m in sudachi_tokenizer.tokenize(text) if m.part_of_speech()[0] == "名詞"]
     return nouns
-
-
-# def emotion_analysis(text):
-#     """テキストをML-Askを使用して解析し、ラッセル円環モデルに基づいた感情分析を行う。
-
-#     Args:
-#     - text (str): 入力テキスト。
-    
-#     Returns:
-#     - dict: 分析結果の辞書。
-#     """
-#     emotion_analyzer = MLAsk()
-#     return emotion_analyzer.analyze(text)
 
 
 import torch
