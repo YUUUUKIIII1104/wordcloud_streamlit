@@ -25,6 +25,4 @@ if uploaded_file:
     fig_nouns = create_wordcloud(' '.join(nouns))
     st.pyplot(fig_nouns)
 
-    # st.subheader("感情分析結果 (ML-Ask)")
-    # emotion_results = emotion_analysis(extracted_text)
-    # st.write(emotion_results)
+
