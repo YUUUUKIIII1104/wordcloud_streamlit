@@ -1,0 +1,7 @@
+re
+sudachipy
+SudachiDict-core
+wordcloud
+matplotlib
+mlask
+PyPDF2
