@@ -2,7 +2,7 @@ import re
 from sudachipy import dictionary
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-
+# from mlask import MLAsk
 
 def extract_text_from_pdf(pdf_path):
     """PDFファイルからテキストを抽出する。
@@ -39,7 +39,7 @@ def create_wordcloud(text, stopwords=None, background_color='white', max_words=2
     """
     sudachi_tokenizer = dictionary.Dictionary().create()
     text = " ".join([m.surface() for m in sudachi_tokenizer.tokenize(text)])
-    wc = WordCloud(font_path='/Library/Fonts/Arial Unicode.ttf', stopwords=stopwords, background_color=background_color, max_words=max_words, width=width, height=height)
+    wc = WordCloud(font_path='./Fonts/Arial Unicode.ttf', stopwords=stopwords, background_color=background_color, max_words=max_words, width=width, height=height)
     wc.generate(text)
     fig, ax = plt.subplots()
     ax.imshow(wc, interpolation='bilinear')
@@ -59,6 +59,7 @@ def extract_nouns(text):
     sudachi_tokenizer = dictionary.Dictionary().create()
     nouns = [m.surface() for m in sudachi_tokenizer.tokenize(text) if m.part_of_speech()[0] == "名詞"]
     return nouns
+
 
 
 import torch
