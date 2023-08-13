@@ -3,6 +3,7 @@ SudachiDict_core
 wordcloud
 matplotlib
 numpy
+json
 requests
 PyPDF2
 streamlit
