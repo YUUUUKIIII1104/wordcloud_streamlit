@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 
 import numpy as np
-#import json
+import json
 import requests
 
 def extract_text_from_pdf(pdf_path):
