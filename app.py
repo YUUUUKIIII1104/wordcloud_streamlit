@@ -3,7 +3,7 @@ from sudachipy import dictionary, tokenizer
 from sudachipy.tokenizer import Tokenizer
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-import stleamlit as st
+import streamlit as st
 
 import numpy as np
 #import json
