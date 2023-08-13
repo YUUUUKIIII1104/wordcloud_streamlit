@@ -3,9 +3,10 @@ from sudachipy import dictionary, tokenizer
 from sudachipy.tokenizer import Tokenizer
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+import stleamlit as st
 
 import numpy as np
-import json
+#import json
 import requests
 
 def extract_text_from_pdf(pdf_path):
@@ -64,13 +65,17 @@ def extract_nouns(text):
     nouns = [m.surface() for m in sudachi_tokenizer.tokenize(text) if m.part_of_speech()[0] == "名詞"]
     return nouns
 
+# ローカルで動かす場合はjsonで読み込む
+# with open('secret.json') as f:
+#     secret = json.load(f)
 
-with open('secret.json') as f:
-    secret = json.load(f)
+# BASE_URL = secret["COTOHA_BASE_URL"]
+# CLIENT_ID = secret["COTOHA_ID"]
+# CLIENT_SECRET = secret["COTOHA_SECRET"]
 
-BASE_URL = secret["COTOHA_BASE_URL"]
-CLIENT_ID = secret["COTOHA_ID"]
-CLIENT_SECRET = secret["COTOHA_SECRET"]
+BASE_URL = st.secret["COTOHA_BASE_URL"]
+CLIENT_ID = st.secret["COTOHA_ID"]
+CLIENT_SECRET = st.secret["COTOHA_SECRET"]
 
 def get_cotoha_acces_token():
 
