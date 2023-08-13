@@ -1,4 +1,5 @@
 sudachipy
+SudachiDict_core
 wordcloud
 matplotlib
 numpy
