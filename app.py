@@ -73,9 +73,9 @@ def extract_nouns(text):
 # CLIENT_ID = secret["COTOHA_ID"]
 # CLIENT_SECRET = secret["COTOHA_SECRET"]
 
-BASE_URL = st.secret["COTOHA_BASE_URL"]
-CLIENT_ID = st.secret["COTOHA_ID"]
-CLIENT_SECRET = st.secret["COTOHA_SECRET"]
+BASE_URL = st.secrets["COTOHA_BASE_URL"]
+CLIENT_ID = st.secrets["COTOHA_ID"]
+CLIENT_SECRET = st.secrets["COTOHA_SECRET"]
 
 def get_cotoha_acces_token():
 
